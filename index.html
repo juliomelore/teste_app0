@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>meu-projeto</title>
-<meta property="og:title" content="meu-projeto" />
+<title>teste3_app</title>
+<meta property="og:title" content="teste3_app" />
 <meta property="og:image" content="preview.png" />
 <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <style>
@@ -32,10 +32,10 @@
 </head>
 <body>
 <div class="pagina">
-  <h1>meu-projeto</h1>
+  <h1>teste3_app</h1>
   <p class="sub">Modelo 3D com realidade aumentada. Gire com o mouse ou o dedo.</p>
 
-  <model-viewer src="meu-projeto.glb" alt="meu-projeto" camera-controls touch-action="pan-y" auto-rotate shadow-intensity="1"
+  <model-viewer src="teste3_app.glb" alt="teste3_app" camera-controls touch-action="pan-y" auto-rotate shadow-intensity="1"
     ar ar-modes="webxr scene-viewer" ar-placement="floor" poster="preview.png">
     <button slot="ar-button" class="botao principal" id="btn-ar-nativo" hidden>Ver aqui, sem imprimir nada</button>
   </model-viewer>
@@ -43,14 +43,14 @@
   <div class="acoes">
     <a class="botao principal" href="ar.html">Ver sobre a imagem impressa</a>
     <a class="botao" href="imagem-alvo.png" download>Baixar a imagem para imprimir</a>
-    <a class="botao" href="meu-projeto.glb" download>Baixar o modelo</a>
+    <a class="botao" href="teste3_app.glb" download>Baixar o modelo</a>
   </div>
 
   <div class="cartoes">
     <div class="cartao">
       <h2>Dois jeitos de ver em AR</h2>
-      <p style="margin:0 0 10px"><strong>Sem imprimir:</strong> no Android, o botão sobre o modelo abre a AR do próprio
-      celular e põe o objeto no chão. Não aparece em computadores nem no iPhone.</p>
+      <p style="margin:0 0 10px"><strong>Sem imprimir:</strong> em muitos Android, o botão sobre o modelo abre a AR do
+      próprio celular e põe o objeto no chão. Não aparece em computadores nem no iPhone.</p>
       <p style="margin:0"><strong>Sobre a imagem impressa:</strong> funciona em qualquer celular com câmera,
       apontando para a imagem abaixo.</p>
     </div>
@@ -77,11 +77,31 @@
 (function () {
   var mv = document.querySelector('model-viewer');
   var botao = document.getElementById('btn-ar-nativo');
-  // O botao da AR do proprio aparelho so aparece onde ela existe: sem isso,
-  // no computador e no iPhone fica um botao que nao faz nada.
-  function ajustar() { botao.hidden = !mv.canActivateAR; }
+
+  // canActivateAR e conhecido por dar respostas erradas nos dois sentidos:
+  // falso positivo dentro de navegadores embutidos (Instagram, WhatsApp, Facebook)
+  // por um bug do WKWebView no iOS, e falso negativo as vezes logo apos o load.
+  // Regra mais segura: no iPhone nunca existe essa AR (so haveria via um
+  // arquivo .usdz, que este pacote nao gera), entao escondemos sempre; dentro
+  // de navegador embutido tambem escondemos sempre, porque a AR nativa exige
+  // o navegador de verdade. So no que sobrar confiamos no canActivateAR.
+  function ehIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+  function ehNavegadorEmbutido() {
+    var ua = navigator.userAgent || '';
+    return /Instagram|FBAN|FBAV|FB_IAB|Line\/|MicroMessenger|TikTok|WhatsApp/i.test(ua);
+  }
+
+  function ajustar() {
+    if (ehIOS() || ehNavegadorEmbutido()) { botao.hidden = true; return; }
+    botao.hidden = !mv.canActivateAR;
+  }
   mv.addEventListener('load', ajustar);
-  setTimeout(ajustar, 1500);
+  // canActivateAR pode demorar a assentar logo apos o load; confere de novo.
+  setTimeout(ajustar, 1200);
+  setTimeout(ajustar, 3000);
 })();
 </script>
 </body>

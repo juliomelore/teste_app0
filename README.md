@@ -1,4 +1,4 @@
-# meu-projeto
+# teste3_app
 
 Exportado pelo Navegador 3D em 2026-09-16.
 
@@ -34,8 +34,8 @@ Não separe os arquivos em subpastas: a página de AR procura o modelo e a image
 
 - `index.html`: página inicial. Mostra o modelo em 3D (funciona no computador), a imagem
   para imprimir e os botões de AR.
-- `ar.html`: a realidade aumentada.
-- `meu-projeto.glb`: o modelo completo, abre em qualquer visualizador glTF.
+- `ar.html`: a realidade aumentada, por câmera, apontando para a imagem impressa.
+- `teste3_app.glb`: o modelo completo, abre em qualquer visualizador glTF.
 - `imagem-alvo.png`: **imprima este arquivo**. O modelo aparece sobre ele.
 - `alvo.mind`: a mesma imagem, preparada para o rastreio.
 - `projeto.json`: câmera, grade e configuração de AR.
@@ -49,9 +49,11 @@ Dá para ajustar na hora, pelos botões Maior e Menor.
 
 - A câmera só abre em endereços https:// ou em localhost. Abrir o arquivo direto do
   computador mostra o modelo 3D, mas não a AR.
-- Navegadores embutidos do Instagram e do WhatsApp bloqueiam a câmera: toque em
-  "Abrir no navegador".
-- Se a imagem não é reconhecida: imprima maior, use boa luz, evite reflexo e enquadre
-  ela inteira. Imagens com bastante detalhe e contraste funcionam melhor.
+- Navegadores embutidos do Instagram, WhatsApp e afins bloqueiam a câmera: toque nos três
+  pontinhos e escolha "Abrir no navegador".
+- Se a imagem não é reconhecida: imprima maior (pelo menos do tamanho de uma folha A5),
+  use boa luz sem reflexo no papel, e enquadre a imagem inteira, não só um pedaço.
+- Imagens com bastante detalhe, contraste e textura são reconhecidas melhor que uma arte
+  lisa ou muito clara; o editor já avisa isso na hora de escolher a imagem.
 
 Convenção: Y para cima, metros.
