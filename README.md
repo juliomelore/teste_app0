@@ -1,4 +1,4 @@
-# teste3_app
+# teste4
 
 Exportado pelo Navegador 3D em 2026-09-16.
 
@@ -35,7 +35,7 @@ Não separe os arquivos em subpastas: a página de AR procura o modelo e a image
 - `index.html`: página inicial. Mostra o modelo em 3D (funciona no computador), a imagem
   para imprimir e os botões de AR.
 - `ar.html`: a realidade aumentada, por câmera, apontando para a imagem impressa.
-- `teste3_app.glb`: o modelo completo, abre em qualquer visualizador glTF.
+- `teste4.glb`: o modelo completo, abre em qualquer visualizador glTF.
 - `imagem-alvo.png`: **imprima este arquivo**. O modelo aparece sobre ele.
 - `alvo.mind`: a mesma imagem, preparada para o rastreio.
 - `projeto.json`: câmera, grade e configuração de AR.
