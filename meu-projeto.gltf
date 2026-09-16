@@ -1,0 +1,241 @@
+{
+ "asset": {
+  "generator": "glTF-Transform v4.5.0",
+  "version": "2.0"
+ },
+ "accessors": [
+  {
+   "type": "VEC3",
+   "componentType": 5126,
+   "count": 135557,
+   "max": [
+    0.1999078392982483,
+    0.009999988600611687,
+    -5.777692422270775e-7
+   ],
+   "min": [
+    1.1293741408735514e-7,
+    -0.009999988600611687,
+    -0.03732758015394211
+   ],
+   "bufferView": 0,
+   "byteOffset": 0
+  },
+  {
+   "type": "VEC3",
+   "componentType": 5126,
+   "count": 135557,
+   "bufferView": 0,
+   "byteOffset": 12
+  },
+  {
+   "type": "SCALAR",
+   "componentType": 5125,
+   "count": 810732,
+   "bufferView": 1,
+   "byteOffset": 0
+  },
+  {
+   "type": "SCALAR",
+   "componentType": 5125,
+   "count": 6,
+   "bufferView": 1,
+   "byteOffset": 3242928
+  },
+  {
+   "type": "VEC3",
+   "componentType": 5126,
+   "count": 4,
+   "max": [
+    0.5,
+    0.5,
+    0
+   ],
+   "min": [
+    -0.5,
+    -0.5,
+    0
+   ],
+   "bufferView": 2,
+   "byteOffset": 0
+  },
+  {
+   "type": "VEC3",
+   "componentType": 5126,
+   "count": 4,
+   "bufferView": 2,
+   "byteOffset": 12
+  },
+  {
+   "type": "VEC2",
+   "componentType": 5126,
+   "count": 4,
+   "bufferView": 2,
+   "byteOffset": 24
+  }
+ ],
+ "bufferViews": [
+  {
+   "buffer": 0,
+   "byteOffset": 0,
+   "byteLength": 3253368,
+   "byteStride": 24,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 3253368,
+   "byteLength": 3242952,
+   "target": 34963
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 6496320,
+   "byteLength": 128,
+   "byteStride": 32,
+   "target": 34962
+  }
+ ],
+ "samplers": [
+  {
+   "magFilter": 9729,
+   "minFilter": 9987,
+   "wrapS": 10497,
+   "wrapT": 10497
+  }
+ ],
+ "textures": [
+  {
+   "source": 0,
+   "sampler": 0
+  }
+ ],
+ "images": [
+  {
+   "name": "sem-fundo.png",
+   "mimeType": "image/png",
+   "uri": "textures/sem-fundo.png"
+  }
+ ],
+ "buffers": [
+  {
+   "uri": "meu-projeto.bin",
+   "byteLength": 6496448
+  }
+ ],
+ "materials": [
+  {
+   "name": "SVGMat",
+   "doubleSided": true,
+   "pbrMetallicRoughness": {
+    "baseColorFactor": [
+     0,
+     0,
+     1,
+     1
+    ]
+   }
+  },
+  {
+   "name": "sem-fundo.png",
+   "alphaMode": "MASK",
+   "alphaCutoff": 0.5,
+   "doubleSided": true,
+   "pbrMetallicRoughness": {
+    "metallicFactor": 0,
+    "baseColorTexture": {
+     "index": 0
+    }
+   }
+  }
+ ],
+ "meshes": [
+  {
+   "primitives": [
+    {
+     "attributes": {
+      "POSITION": 0,
+      "NORMAL": 1
+     },
+     "mode": 4,
+     "material": 0,
+     "indices": 2
+    }
+   ]
+  },
+  {
+   "primitives": [
+    {
+     "attributes": {
+      "POSITION": 4,
+      "NORMAL": 5,
+      "TEXCOORD_0": 6
+     },
+     "mode": 4,
+     "material": 1,
+     "indices": 3
+    }
+   ]
+  }
+ ],
+ "nodes": [
+  {
+   "name": "rafa2",
+   "extras": {
+    "origem": {
+     "arquivo": "rafa2.glb",
+     "tamanho": 9757216
+    }
+   },
+   "translation": [
+    0,
+    0,
+    0.18156606574118048
+   ],
+   "scale": [
+    4.350260606334446,
+    4.350260606334446,
+    4.350260606334446
+   ],
+   "children": [
+    1
+   ]
+  },
+  {
+   "name": "Curve009",
+   "extras": {
+    "name": "Curve.009"
+   },
+   "translation": [
+    -0.08962590992450714,
+    0.03561174124479294,
+    0.048127077519893646
+   ],
+   "mesh": 0
+  },
+  {
+   "name": "sem-fundo",
+   "extras": {
+    "tipo": "imagem",
+    "recursoId": "bbe5e83dab60207a592d05f789b1133c471bdabb85630187a483fe9d2015cba1"
+   },
+   "rotation": [
+    0.7071067811865476,
+    0,
+    0,
+    0.7071067811865476
+   ],
+   "mesh": 1
+  }
+ ],
+ "scenes": [
+  {
+   "name": "AuxScene",
+   "nodes": [
+    0,
+    2
+   ]
+  }
+ ],
+ "scene": 0
+}

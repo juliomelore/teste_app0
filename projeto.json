@@ -1,18 +1,18 @@
 {
-  "schema": 1,
-  "nome": "teste",
-  "geradoEm": "2026-09-16T14:19:17.337Z",
+  "schema": 2,
+  "nome": "meu-projeto",
+  "geradoEm": "2026-09-16T19:30:20.180Z",
   "unidade": "m",
   "camera": {
     "posicao": [
-      -0.13387784456377078,
-      0.6796978378620054,
-      0.09953141256886423
+      -0.06532635567276268,
+      1.220648138193801,
+      0.23441393605521704
     ],
     "alvo": [
-      -0.1338778459929082,
-      0.2619479094689676,
-      0.0995309948213804
+      -0.0674407086740238,
+      0.04586328379164465,
+      0.2166830516950257
     ],
     "projecao": "perspectiva"
   },
@@ -23,10 +23,10 @@
     "marcadorRecursoId": "bbe5e83dab60207a592d05f789b1133c471bdabb85630187a483fe9d2015cba1",
     "marcadorNome": "sem-fundo.png",
     "escala": 1,
-    "motor": "arjs-pattern"
+    "motor": "mindar-image"
   },
   "arquivos": {
-    "modelo": "teste.glb",
+    "modelo": "meu-projeto.glb",
     "preview": "preview.png"
   }
 }

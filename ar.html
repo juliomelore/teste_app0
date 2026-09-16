@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>meu-projeto · AR</title>
+<script src="https://cdn.jsdelivr.net/npm/aframe@1.3.0/dist/aframe-master.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+<style>
+
+  :root { color-scheme: dark; --bg:#14171c; --painel:#1c2027; --linha:#313843; --tinta:#e7e9ee; --tinta2:#b6bcc7; --destaque:#6b9cf0; --destaque-tinta:#0f1420; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--tinta); font: 15px/1.5 system-ui, "Segoe UI", sans-serif; }
+  a.botao, button.botao { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 1px solid var(--linha); border-radius: 22px; background: var(--painel); color: var(--tinta); font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
+  a.botao.principal, button.botao.principal { background: var(--destaque); border-color: var(--destaque); color: var(--destaque-tinta); }
+
+  /* Fundo transparente: o video da camera fica atras do canvas.
+     Qualquer cor opaca aqui pinta por cima e a tela fica preta. */
+  html, body { height: 100%; background: transparent; overflow: hidden; }
+  #painel-topo { position: fixed; left: 12px; right: 12px; top: 12px; z-index: 20; padding: 10px 14px; border-radius: 10px; background: rgba(20,23,28,.88); font-size: 14px; }
+  #painel-topo[hidden] { display: none; }
+  #controles { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); pointer-events: auto; }
+  #controles button, #controles a { background: rgba(20,23,28,.88); }
+  /* A biblioteca desenha um scanner por cima; o painel e os botoes ficam acima dele. */
+  .mindar-ui-overlay { z-index: 10; }
+</style>
+</head>
+<body>
+<div id="painel-topo">Carregando… aponte a câmera para a imagem de <strong>meu-projeto</strong>.</div>
+
+<div id="controles">
+  <button type="button" class="botao" id="btn-menor">Menor</button>
+  <button type="button" class="botao" id="btn-maior">Maior</button>
+  <button type="button" class="botao" id="btn-girar">Girar</button>
+  <a class="botao" href="index.html">Voltar</a>
+</div>
+
+<a-scene mindar-image="imageTargetSrc: alvo.mind; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 5; warmupTolerance: 1;"
+  embedded color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true"
+  vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+  <a-assets timeout="30000">
+    <a-asset-item id="modelo" src="meu-projeto.glb"></a-asset-item>
+  </a-assets>
+
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+  <a-entity mindar-image-target="targetIndex: 0" id="alvo">
+    <!-- No MindAR o alvo e o plano XY, com +Z saindo da imagem. O modelo glTF
+         tem Y para cima, entao girar 90 graus em X deixa o modelo em pe sobre
+         o papel, com a base encostada nele. -->
+    <a-entity id="conteudo" gltf-model="#modelo" rotation="90 0 0" scale="1 1 1"></a-entity>
+  </a-entity>
+</a-scene>
+
+<script>
+(function () {
+  var conteudo = document.getElementById('conteudo');
+  var painel = document.getElementById('painel-topo');
+  var alvo = document.getElementById('alvo');
+  var escala = 1;
+  var giro = 0;
+  var achou = false;
+
+  function aplicar() {
+    conteudo.setAttribute('scale', escala + ' ' + escala + ' ' + escala);
+    conteudo.setAttribute('rotation', '90 ' + giro + ' 0');
+  }
+  function liga(id, fn) {
+    var el = document.getElementById(id);
+    el.addEventListener('click', fn);
+    el.addEventListener('touchend', function (e) { e.preventDefault(); fn(); }, { passive: false });
+  }
+  liga('btn-maior', function () { escala *= 1.25; aplicar(); });
+  liga('btn-menor', function () { escala /= 1.25; aplicar(); });
+  liga('btn-girar', function () { giro = (giro + 45) % 360; aplicar(); });
+
+  function aviso(html) { painel.innerHTML = html; painel.hidden = false; }
+
+  // No MindAR os eventos sao targetFound / targetLost (no AR.js sao markerFound).
+  alvo.addEventListener('targetFound', function () { achou = true; painel.hidden = true; });
+  alvo.addEventListener('targetLost', function () { aviso('Imagem perdida. Aponte de novo, enquadrando ela inteira.'); });
+
+  conteudo.addEventListener('model-error', function () {
+    aviso('Não consegui carregar o modelo <code>meu-projeto.glb</code>. Confira se ele está na mesma pasta desta página.');
+  });
+
+  document.querySelector('a-scene').addEventListener('arReady', function () {
+    if (!achou) aviso('Câmera ligada. Aponte para a imagem de <strong>meu-projeto</strong>, enquadrando ela inteira.');
+  });
+  document.querySelector('a-scene').addEventListener('arError', function () {
+    aviso('Não consegui iniciar a AR. Recarregue a página e permita o acesso à câmera.');
+  });
+
+  setTimeout(function () {
+    // Com a camera ligada a pagina passa a ter o video dela; sem isso, avisa.
+    var temCamera = Array.prototype.some.call(document.querySelectorAll('video'), function (v) {
+      return v.srcObject && !v.paused && v.videoWidth > 0;
+    });
+    if (!temCamera) {
+      aviso('Não consegui abrir a câmera. Permita o acesso e recarregue a página. ' +
+            'Se abriu pelo Instagram ou WhatsApp, toque em <strong>Abrir no navegador</strong>. ' +
+            'A câmera também exige um endereço https://.');
+    }
+  }, 9000);
+})();
+</script>
+</body>
+</html>
