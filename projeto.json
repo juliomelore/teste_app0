@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "nome": "teste",
+  "geradoEm": "2026-09-16T14:19:17.337Z",
+  "unidade": "m",
+  "camera": {
+    "posicao": [
+      -0.13387784456377078,
+      0.6796978378620054,
+      0.09953141256886423
+    ],
+    "alvo": [
+      -0.1338778459929082,
+      0.2619479094689676,
+      0.0995309948213804
+    ],
+    "projecao": "perspectiva"
+  },
+  "grade": {
+    "visivel": true
+  },
+  "ar": {
+    "marcadorRecursoId": "bbe5e83dab60207a592d05f789b1133c471bdabb85630187a483fe9d2015cba1",
+    "marcadorNome": "sem-fundo.png",
+    "escala": 1,
+    "motor": "arjs-pattern"
+  },
+  "arquivos": {
+    "modelo": "teste.glb",
+    "preview": "preview.png"
+  }
+}
