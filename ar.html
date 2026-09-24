@@ -53,11 +53,11 @@ setTimeout(function () {
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MindARThree } from 'mindar-image-three';
 
 window.__arIniciou = true;
 var CONFIG = {"modelo":"teste4.glb","alvo":"alvo.mind","escala":0.6958942240779401,"filterMinCF":0.0003,"filterBeta":0.1,"missTolerance":5,"warmupTolerance":2};
+var LUZ = {"hemisferio":{"ceu":"#dfe6f2","chao":"#2a2d33","intensidade":1.1},"sol":{"cor":"#ffffff","intensidade":2.2,"posicao":[4,8,3]}};
 var painel = document.getElementById('painel-topo');
 function aviso(html) { painel.innerHTML = html; painel.hidden = false; }
 
@@ -85,15 +85,6 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 // Tela de celular chega a 3x; acima de 2x o custo cresce sem diferenca visivel.
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-// Luz e um ambiente neutro: sem ambiente, material metalico fica preto.
-scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 1.2));
-var sol = new THREE.DirectionalLight(0xffffff, 1.6);
-sol.position.set(0.5, 1, 2);
-scene.add(sol);
-var pmrem = new THREE.PMREMGenerator(renderer);
-scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-pmrem.dispose();
-
 var ancora = mindar.addAnchor(0);
 var base = new THREE.Group();
 base.rotation.x = Math.PI / 2;
@@ -102,6 +93,14 @@ var escalaGrupo = new THREE.Group();
 ancora.group.add(base);
 base.add(giro);
 giro.add(escalaGrupo);
+
+// As mesmas luzes do editor, sem ambiente de reflexo: o que se ve no editor e
+// o que aparece aqui. Ficam na base (o espaco do modelo, Y para cima), nao na
+// cena: no MindAR o "alto" da cena e o da camera, e a luz viria de lado.
+base.add(new THREE.HemisphereLight(LUZ.hemisferio.ceu, LUZ.hemisferio.chao, LUZ.hemisferio.intensidade));
+var sol = new THREE.DirectionalLight(LUZ.sol.cor, LUZ.sol.intensidade);
+sol.position.fromArray(LUZ.sol.posicao);
+base.add(sol, sol.target);
 
 var escala = CONFIG.escala;
 var angulo = 0;
@@ -115,6 +114,14 @@ aplicar();
 
 var mixer = null;
 new GLTFLoader().loadAsync(CONFIG.modelo).then(function (gltf) {
+  // Imagem com recorte (traco fino sobre transparente): bordas suavizadas pelo
+  // MSAA. O GLB ja vem sem mipmap nessas texturas (ver Exportador).
+  gltf.scene.traverse(function (o) {
+    if (!o.isMesh) return;
+    (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
+      if (m.alphaTest > 0) m.alphaToCoverage = true;
+    });
+  });
   escalaGrupo.add(gltf.scene);
   if (gltf.animations && gltf.animations.length) {
     mixer = new THREE.AnimationMixer(gltf.scene);
