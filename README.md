@@ -1,6 +1,6 @@
-# teste4
+# teste_app23
 
-Exportado pelo Navegador 3D em 2026-09-16.
+Exportado pelo Navegador 3D em 2026-09-24.
 
 ## Abrir no computador, sem publicar nada
 
@@ -35,15 +35,16 @@ Não separe os arquivos em subpastas: a página de AR procura o modelo e a image
 - `index.html`: página inicial. Mostra o modelo em 3D (funciona no computador), a imagem
   para imprimir e os botões de AR.
 - `ar.html`: a realidade aumentada, por câmera, apontando para a imagem impressa.
-- `teste4.glb`: o modelo completo, abre em qualquer visualizador glTF.
+- `teste_app23.glb`: o modelo completo, abre em qualquer visualizador glTF.
 - `imagem-alvo.png`: **imprima este arquivo**. O modelo aparece sobre ele.
 - `alvo.mind`: a mesma imagem, preparada para o rastreio.
 - `projeto.json`: câmera, grade e configuração de AR.
 - `preview.png`: captura da cena.
 - `.nojekyll`: evita que o GitHub Pages esconda arquivos.
 
-Tamanho na AR: 1 (1 = o modelo aparece do tamanho da imagem).
-Dá para ajustar na hora, pelos botões Maior e Menor.
+Tamanho: a imagem impressa representa 1 m da cena.
+Imprimir com essa largura deixa o modelo em tamanho real; maior ou menor, o modelo acompanha o papel.
+Na AR dá para ajustar na hora: botões Maior, Menor e Girar, ou pinça e arrastar com o dedo.
 
 ## Se a AR não funcionar
 

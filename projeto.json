@@ -1,18 +1,18 @@
 {
-  "schema": 2,
-  "nome": "teste4",
-  "geradoEm": "2026-09-16T20:30:11.607Z",
+  "schema": 3,
+  "nome": "teste_app23",
+  "geradoEm": "2026-09-24T02:22:42.595Z",
   "unidade": "m",
   "camera": {
     "posicao": [
-      -0.4181329927762428,
-      0.8341728277796052,
-      1.007953784231309
+      0.3849870934825833,
+      2.7877670884229904,
+      1.1031109050302443
     ],
     "alvo": [
-      -0.06853275323108739,
-      0.04596820762803711,
-      0.20986139724644967
+      0.3237350376714015,
+      0.34306537679207,
+      0.2705892219942361
     ],
     "projecao": "perspectiva"
   },
@@ -20,13 +20,15 @@
     "visivel": true
   },
   "ar": {
-    "marcadorRecursoId": "bbe5e83dab60207a592d05f789b1133c471bdabb85630187a483fe9d2015cba1",
-    "marcadorNome": "sem-fundo.png",
-    "escala": 1,
+    "marcadorRecursoId": "36889e1785d4212cb4caedfe56d5d762729d03e119a96b3d3bfeb08d07a8690f",
+    "marcadorNome": "teste1.png",
+    "larguraMarcador": 1,
+    "mostrarMarcacao": true,
+    "estabilidade": "equilibrado",
     "motor": "mindar-image"
   },
   "arquivos": {
-    "modelo": "teste4.glb",
+    "modelo": "teste_app23.glb",
     "preview": "preview.png"
   }
 }

@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<title>teste4 · AR</title>
-<script src="https://cdn.jsdelivr.net/npm/aframe@1.3.0/dist/aframe-master.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+<title>teste_app23 · AR</title>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js" />
+<link rel="preload" href="alvo.mind" as="fetch" crossorigin />
+<link rel="preload" href="teste_app23.glb" as="fetch" crossorigin />
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/","mindar-image-three":"https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"}}</script>
 <style>
 
   :root { color-scheme: dark; --bg:#14171c; --painel:#1c2027; --linha:#313843; --tinta:#e7e9ee; --tinta2:#b6bcc7; --destaque:#6b9cf0; --destaque-tinta:#0f1420; }
@@ -17,16 +19,18 @@
   /* Fundo transparente: o video da camera fica atras do canvas.
      Qualquer cor opaca aqui pinta por cima e a tela fica preta. */
   html, body { height: 100%; background: transparent; overflow: hidden; touch-action: none; }
+  #ar { position: fixed; inset: 0; overflow: hidden; }
   #painel-topo { position: fixed; left: 12px; right: 12px; top: 12px; z-index: 20; padding: 10px 14px; border-radius: 10px; background: rgba(20,23,28,.88); font-size: 14px; }
   #painel-topo[hidden] { display: none; }
-  #controles { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); pointer-events: auto; }
+  #controles { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
   #controles button, #controles a { background: rgba(20,23,28,.88); }
-  /* A biblioteca desenha um scanner por cima; o painel e os botoes ficam acima dele. */
+  /* A biblioteca desenha o carregando e o scanner por cima; painel e botoes ficam acima. */
   .mindar-ui-overlay { z-index: 10; }
 </style>
 </head>
 <body>
-<div id="painel-topo">Carregando… aponte a câmera para a imagem de <strong>teste4</strong>.</div>
+<div id="ar"></div>
+<div id="painel-topo">Carregando… aponte a câmera para a imagem de <strong>teste_app23</strong>.</div>
 
 <div id="controles">
   <button type="button" class="botao" id="btn-menor">Menor</button>
@@ -35,81 +39,181 @@
   <a class="botao" href="index.html">Voltar</a>
 </div>
 
-<a-scene mindar-image="imageTargetSrc: alvo.mind; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 5; warmupTolerance: 1;"
-  embedded color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true"
-  vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-  <a-assets timeout="30000">
-    <a-asset-item id="modelo" src="teste4.glb"></a-asset-item>
-  </a-assets>
-
-  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-  <a-entity mindar-image-target="targetIndex: 0" id="alvo">
-    <!-- No MindAR o alvo e o plano XY, com +Z saindo da imagem. O modelo glTF
-         tem Y para cima, entao girar 90 graus em X deixa o modelo em pe sobre
-         o papel, com a base encostada nele. -->
-    <a-entity id="conteudo" gltf-model="#modelo" rotation="90 0 0" scale="1 1 1"></a-entity>
-  </a-entity>
-</a-scene>
-
 <script>
-(function () {
-  var conteudo = document.getElementById('conteudo');
-  var painel = document.getElementById('painel-topo');
-  var alvo = document.getElementById('alvo');
-  var escala = 1;
-  var giro = 0;
-  var achou = false;
+// Navegador sem import map (iOS antes do 16.4) nunca roda o modulo abaixo:
+// sem este aviso a pagina ficaria em "Carregando…" para sempre.
+setTimeout(function () {
+  if (window.__arIniciou) return;
+  var p = document.getElementById('painel-topo');
+  p.hidden = false;
+  p.innerHTML = 'A AR não carregou. Confira a internet e atualize o navegador (no iPhone, iOS 16.4 ou mais novo).';
+}, 20000);
+</script>
 
-  function aplicar() {
-    conteudo.setAttribute('scale', escala + ' ' + escala + ' ' + escala);
-    conteudo.setAttribute('rotation', '90 ' + giro + ' 0');
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { MindARThree } from 'mindar-image-three';
+
+window.__arIniciou = true;
+var CONFIG = {"modelo":"teste_app23.glb","alvo":"alvo.mind","escala":1,"filterMinCF":0.0003,"filterBeta":0.1,"missTolerance":5,"warmupTolerance":2};
+var painel = document.getElementById('painel-topo');
+function aviso(html) { painel.innerHTML = html; painel.hidden = false; }
+
+// Alguns navegadores embutidos (Instagram, WhatsApp) bloqueiam a camera de
+// saida: avisa antes mesmo de tentar, em vez de deixar o usuario esperando.
+if (/Instagram|FBAN|FBAV|FB_IAB|Line\/|MicroMessenger|TikTok|WhatsApp/i.test(navigator.userAgent)) {
+  aviso('Este link abriu dentro de um aplicativo (Instagram, WhatsApp ou parecido), que costuma bloquear a câmera. ' +
+        'Toque nos três pontinhos e escolha <strong>Abrir no navegador</strong>.');
+}
+
+var mindar = new MindARThree({
+  container: document.getElementById('ar'),
+  imageTargetSrc: CONFIG.alvo,
+  maxTrack: 1,
+  filterMinCF: CONFIG.filterMinCF,
+  filterBeta: CONFIG.filterBeta,
+  missTolerance: CONFIG.missTolerance,
+  warmupTolerance: CONFIG.warmupTolerance,
+  uiLoading: 'yes', uiScanning: 'yes', uiError: 'no'
+});
+var renderer = mindar.renderer, scene = mindar.scene, camera = mindar.camera;
+// O MindAR ainda escreve outputEncoding, que o three 0.160 ignora; o espaco de
+// cor vai explicito.
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+// Tela de celular chega a 3x; acima de 2x o custo cresce sem diferenca visivel.
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+// Luz e um ambiente neutro: sem ambiente, material metalico fica preto.
+scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 1.2));
+var sol = new THREE.DirectionalLight(0xffffff, 1.6);
+sol.position.set(0.5, 1, 2);
+scene.add(sol);
+var pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+pmrem.dispose();
+
+var ancora = mindar.addAnchor(0);
+var base = new THREE.Group();
+base.rotation.x = Math.PI / 2;
+var giro = new THREE.Group();
+var escalaGrupo = new THREE.Group();
+ancora.group.add(base);
+base.add(giro);
+giro.add(escalaGrupo);
+
+var escala = CONFIG.escala;
+var angulo = 0;
+var sujo = true;
+function aplicar() {
+  escalaGrupo.scale.setScalar(escala);
+  giro.rotation.y = angulo;
+  sujo = true;
+}
+aplicar();
+
+var mixer = null;
+new GLTFLoader().loadAsync(CONFIG.modelo).then(function (gltf) {
+  escalaGrupo.add(gltf.scene);
+  if (gltf.animations && gltf.animations.length) {
+    mixer = new THREE.AnimationMixer(gltf.scene);
+    gltf.animations.forEach(function (clip) { mixer.clipAction(clip).play(); });
   }
-  function liga(id, fn) {
-    var el = document.getElementById(id);
-    el.addEventListener('click', fn);
-    el.addEventListener('touchend', function (e) { e.preventDefault(); fn(); }, { passive: false });
+  sujo = true;
+}).catch(function () {
+  aviso('Não consegui carregar o modelo <code>teste_app23.glb</code>. Confira se ele está na mesma pasta desta página.');
+});
+
+var achou = false;
+ancora.onTargetFound = function () { achou = true; painel.hidden = true; sujo = true; };
+ancora.onTargetLost = function () { aviso('Imagem perdida. Aponte de novo, enquadrando ela inteira, com boa luz.'); sujo = true; };
+ancora.onTargetUpdate = function () { sujo = true; };
+
+// So desenha quando algo mudou: pose nova, animacao, botao. Parado, a GPU
+// fica livre para o rastreio (que tambem roda na GPU, pelo tfjs).
+var relogio = new THREE.Clock();
+function quadro() {
+  var dt = relogio.getDelta();
+  if (mixer && ancora.visible) { mixer.update(dt); sujo = true; }
+  if (!sujo) return;
+  sujo = false;
+  renderer.render(scene, camera);
+}
+
+function liga(id, fn) {
+  var el = document.getElementById(id);
+  el.addEventListener('click', fn);
+  el.addEventListener('touchend', function (e) { e.preventDefault(); fn(); }, { passive: false });
+}
+liga('btn-maior', function () { escala *= 1.25; aplicar(); });
+liga('btn-menor', function () { escala /= 1.25; aplicar(); });
+liga('btn-girar', function () { angulo += Math.PI / 4; aplicar(); });
+
+// Gestos: arrastar um dedo gira sobre o papel, pinca muda o tamanho.
+var toques = {};
+var gesto = null;
+// No documento inteiro: o scanner do MindAR cobre a tela e ficaria com o toque.
+function ehControle(e) { return e.target && e.target.closest && e.target.closest('#controles, #painel-topo'); }
+function distancia(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+document.addEventListener('pointerdown', function (e) {
+  if (ehControle(e)) return;
+  toques[e.pointerId] = { x: e.clientX, y: e.clientY };
+  var ids = Object.keys(toques);
+  gesto = ids.length === 2
+    ? { tipo: 'pinca', d: distancia(toques[ids[0]], toques[ids[1]]), escala: escala }
+    : { tipo: 'giro', x: e.clientX, angulo: angulo };
+});
+document.addEventListener('pointermove', function (e) {
+  if (!toques[e.pointerId] || !gesto) return;
+  toques[e.pointerId] = { x: e.clientX, y: e.clientY };
+  var ids = Object.keys(toques);
+  if (gesto.tipo === 'pinca' && ids.length === 2) {
+    var d = distancia(toques[ids[0]], toques[ids[1]]);
+    escala = gesto.escala * Math.max(0.05, d / Math.max(1, gesto.d));
+  } else if (gesto.tipo === 'giro') {
+    angulo = gesto.angulo + (e.clientX - gesto.x) * 0.01;
   }
-  liga('btn-maior', function () { escala *= 1.25; aplicar(); });
-  liga('btn-menor', function () { escala /= 1.25; aplicar(); });
-  liga('btn-girar', function () { giro = (giro + 45) % 360; aplicar(); });
+  aplicar();
+});
+function soltar(e) { delete toques[e.pointerId]; if (!Object.keys(toques).length) gesto = null; }
+document.addEventListener('pointerup', soltar);
+document.addEventListener('pointercancel', soltar);
 
-  function aviso(html) { painel.innerHTML = html; painel.hidden = false; }
-
-  // No MindAR os eventos sao targetFound / targetLost.
-  alvo.addEventListener('targetFound', function () { achou = true; painel.hidden = true; });
-  alvo.addEventListener('targetLost', function () { aviso('Imagem perdida. Aponte de novo, enquadrando ela inteira.'); });
-
-  conteudo.addEventListener('model-error', function () {
-    aviso('Não consegui carregar o modelo <code>teste4.glb</code>. Confira se ele está na mesma pasta desta página.');
-  });
-
-  document.querySelector('a-scene').addEventListener('arReady', function () {
-    if (!achou) aviso('Câmera ligada. Aponte para a imagem de <strong>teste4</strong>, enquadrando ela inteira.');
-  });
-  document.querySelector('a-scene').addEventListener('arError', function () {
-    aviso('Não consegui iniciar a AR. Recarregue a página e permita o acesso à câmera.');
-  });
-
-  // Alguns navegadores embutidos (Instagram, WhatsApp) bloqueiam a camera de
-  // saida: avisa antes mesmo de tentar, em vez de deixar o usuario esperando.
-  if (/Instagram|FBAN|FBAV|FB_IAB|Line\/|MicroMessenger|TikTok|WhatsApp/i.test(navigator.userAgent)) {
-    aviso('Este link abriu dentro de um aplicativo (Instagram, WhatsApp ou parecido), que costuma bloquear a câmera. ' +
-          'Toque nos três pontinhos e escolha <strong>Abrir no navegador</strong>.');
+// Aba em segundo plano: para o rastreio e o desenho (bateria e calor).
+document.addEventListener('visibilitychange', function () {
+  if (!mindar.controller || !mindar.video) return;
+  if (document.hidden) {
+    mindar.controller.stopProcessVideo();
+    renderer.setAnimationLoop(null);
+  } else {
+    mindar.controller.processVideo(mindar.video);
+    renderer.setAnimationLoop(quadro);
   }
+});
 
-  setTimeout(function () {
-    // Com a camera ligada a pagina passa a ter o video dela; sem isso, avisa.
-    var temCamera = Array.prototype.some.call(document.querySelectorAll('video'), function (v) {
-      return v.srcObject && !v.paused && v.videoWidth > 0;
-    });
-    if (!temCamera) {
-      aviso('Não consegui abrir a câmera. Permita o acesso e recarregue a página. ' +
-            'Se abriu pelo Instagram ou WhatsApp, toque em <strong>Abrir no navegador</strong>. ' +
-            'A câmera também exige um endereço https://.');
+// Foco continuo: em muitos Android a camera aberta pelo navegador fica com o
+// foco fixo, e a imagem impressa de perto sai borrada e sem pontos.
+function focarSempre() {
+  try {
+    var trilha = mindar.video.srcObject.getVideoTracks()[0];
+    var cap = trilha.getCapabilities ? trilha.getCapabilities() : {};
+    if (cap.focusMode && cap.focusMode.indexOf('continuous') >= 0) {
+      trilha.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(function () {});
     }
-  }, 9000);
-})();
+  } catch (e) { /* sem suporte: segue com o foco do aparelho */ }
+}
+
+mindar.start().then(function () {
+  focarSempre();
+  renderer.setAnimationLoop(quadro);
+  if (!achou) aviso('Câmera ligada. Aponte para a imagem de <strong>teste_app23</strong>, enquadrando ela inteira.');
+}).catch(function () {
+  if (mindar.ui) mindar.ui.hideLoading();
+  aviso('Não consegui abrir a câmera. Permita o acesso e recarregue a página. ' +
+        'Se abriu pelo Instagram ou WhatsApp, toque em <strong>Abrir no navegador</strong>. ' +
+        'A câmera também exige um endereço https://.');
+});
 </script>
 </body>
 </html>

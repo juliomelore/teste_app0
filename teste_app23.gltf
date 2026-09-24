@@ -1,0 +1,190 @@
+{
+ "asset": {
+  "generator": "glTF-Transform v4.5.0",
+  "version": "2.0"
+ },
+ "accessors": [
+  {
+   "type": "VEC3",
+   "componentType": 5126,
+   "count": 135557,
+   "max": [
+    0.1999078392982483,
+    0.009999988600611687,
+    -5.777692422270775e-7
+   ],
+   "min": [
+    1.1293741408735514e-7,
+    -0.009999988600611687,
+    -0.03732758015394211
+   ],
+   "bufferView": 0,
+   "byteOffset": 0
+  },
+  {
+   "type": "VEC3",
+   "componentType": 5126,
+   "count": 135557,
+   "bufferView": 0,
+   "byteOffset": 12
+  },
+  {
+   "type": "SCALAR",
+   "componentType": 5125,
+   "count": 810732,
+   "bufferView": 1,
+   "byteOffset": 0
+  },
+  {
+   "type": "SCALAR",
+   "componentType": 5126,
+   "count": 360,
+   "max": [
+    12
+   ],
+   "min": [
+    0.03333333507180214
+   ],
+   "bufferView": 2,
+   "byteOffset": 0
+  },
+  {
+   "type": "VEC3",
+   "componentType": 5126,
+   "count": 360,
+   "bufferView": 2,
+   "byteOffset": 1440
+  }
+ ],
+ "bufferViews": [
+  {
+   "buffer": 0,
+   "byteOffset": 0,
+   "byteLength": 3253368,
+   "byteStride": 24,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 3253368,
+   "byteLength": 3242928,
+   "target": 34963
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 6496296,
+   "byteLength": 5760
+  }
+ ],
+ "buffers": [
+  {
+   "uri": "teste_app23.bin",
+   "byteLength": 6502056
+  }
+ ],
+ "materials": [
+  {
+   "name": "SVGMat",
+   "doubleSided": true,
+   "pbrMetallicRoughness": {
+    "baseColorFactor": [
+     0.02028856305209031,
+     0.02955683443236377,
+     0.6514056374127929,
+     1
+    ],
+    "roughnessFactor": 0,
+    "metallicFactor": 0.36
+   },
+   "extensions": {
+    "KHR_materials_emissive_strength": {
+     "emissiveStrength": 1.9
+    }
+   }
+  }
+ ],
+ "meshes": [
+  {
+   "primitives": [
+    {
+     "attributes": {
+      "POSITION": 0,
+      "NORMAL": 1
+     },
+     "mode": 4,
+     "material": 0,
+     "indices": 2
+    }
+   ]
+  }
+ ],
+ "nodes": [
+  {
+   "name": "rafa2",
+   "extras": {
+    "origem": {
+     "arquivo": "rafa2.glb",
+     "tamanho": 9757216
+    }
+   },
+   "translation": [
+    0,
+    -0.17812300755870483,
+    0
+   ],
+   "scale": [
+    10,
+    10,
+    10
+   ],
+   "children": [
+    1
+   ]
+  },
+  {
+   "name": "Curve009",
+   "extras": {
+    "name": "Curve.009"
+   },
+   "translation": [
+    -0.08962590992450714,
+    0.03561174124479294,
+    0.048127077519893646
+   ],
+   "mesh": 0
+  }
+ ],
+ "animations": [
+  {
+   "name": "Curve.009Action",
+   "samplers": [
+    {
+     "input": 3,
+     "output": 4,
+     "interpolation": "LINEAR"
+    }
+   ],
+   "channels": [
+    {
+     "sampler": 0,
+     "target": {
+      "node": 1,
+      "path": "scale"
+     }
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "name": "AuxScene",
+   "nodes": [
+    0
+   ]
+  }
+ ],
+ "scene": 0,
+ "extensionsUsed": [
+  "KHR_materials_emissive_strength"
+ ]
+}
