@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<title>teste_app23 · AR</title>
+<title>teste4 · AR</title>
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js" />
 <link rel="preload" href="alvo.mind" as="fetch" crossorigin />
-<link rel="preload" href="teste_app23.glb" as="fetch" crossorigin />
+<link rel="preload" href="teste4.glb" as="fetch" crossorigin />
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/","mindar-image-three":"https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"}}</script>
 <style>
 
@@ -30,7 +30,7 @@
 </head>
 <body>
 <div id="ar"></div>
-<div id="painel-topo">Carregando… aponte a câmera para a imagem de <strong>teste_app23</strong>.</div>
+<div id="painel-topo">Carregando… aponte a câmera para a imagem de <strong>teste4</strong>.</div>
 
 <div id="controles">
   <button type="button" class="botao" id="btn-menor">Menor</button>
@@ -57,7 +57,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MindARThree } from 'mindar-image-three';
 
 window.__arIniciou = true;
-var CONFIG = {"modelo":"teste_app23.glb","alvo":"alvo.mind","escala":1,"filterMinCF":0.0003,"filterBeta":0.1,"missTolerance":5,"warmupTolerance":2};
+var CONFIG = {"modelo":"teste4.glb","alvo":"alvo.mind","escala":0.6958942240779401,"filterMinCF":0.0003,"filterBeta":0.1,"missTolerance":5,"warmupTolerance":2};
 var painel = document.getElementById('painel-topo');
 function aviso(html) { painel.innerHTML = html; painel.hidden = false; }
 
@@ -122,7 +122,7 @@ new GLTFLoader().loadAsync(CONFIG.modelo).then(function (gltf) {
   }
   sujo = true;
 }).catch(function () {
-  aviso('Não consegui carregar o modelo <code>teste_app23.glb</code>. Confira se ele está na mesma pasta desta página.');
+  aviso('Não consegui carregar o modelo <code>teste4.glb</code>. Confira se ele está na mesma pasta desta página.');
 });
 
 var achou = false;
@@ -207,7 +207,7 @@ function focarSempre() {
 mindar.start().then(function () {
   focarSempre();
   renderer.setAnimationLoop(quadro);
-  if (!achou) aviso('Câmera ligada. Aponte para a imagem de <strong>teste_app23</strong>, enquadrando ela inteira.');
+  if (!achou) aviso('Câmera ligada. Aponte para a imagem de <strong>teste4</strong>, enquadrando ela inteira.');
 }).catch(function () {
   if (mindar.ui) mindar.ui.hideLoading();
   aviso('Não consegui abrir a câmera. Permita o acesso e recarregue a página. ' +
