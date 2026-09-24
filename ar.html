@@ -53,11 +53,12 @@ setTimeout(function () {
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MindARThree } from 'mindar-image-three';
 
 window.__arIniciou = true;
 var CONFIG = {"modelo":"teste4.glb","alvo":"alvo.mind","escala":0.6958942240779401,"filterMinCF":0.0003,"filterBeta":0.1,"missTolerance":5,"warmupTolerance":2};
-var LUZ = {"hemisferio":{"ceu":"#dfe6f2","chao":"#2a2d33","intensidade":1.1},"sol":{"cor":"#ffffff","intensidade":2.2,"posicao":[4,8,3]}};
+var LUZ = {"hemisferio":{"ceu":"#dfe6f2","chao":"#2a2d33","intensidade":1.1},"sol":{"cor":"#ffffff","intensidade":2.2,"posicao":[4,8,3]},"ambiente":{"desfoque":0.04}};
 var painel = document.getElementById('painel-topo');
 function aviso(html) { painel.innerHTML = html; painel.hidden = false; }
 
@@ -94,13 +95,17 @@ ancora.group.add(base);
 base.add(giro);
 giro.add(escalaGrupo);
 
-// As mesmas luzes do editor, sem ambiente de reflexo: o que se ve no editor e
-// o que aparece aqui. Ficam na base (o espaco do modelo, Y para cima), nao na
-// cena: no MindAR o "alto" da cena e o da camera, e a luz viria de lado.
+// As mesmas luzes e o mesmo ambiente de reflexo do editor: o que se ve no
+// editor e o que aparece aqui. As luzes ficam na base (o espaco do modelo, Y
+// para cima), nao na cena: no MindAR o "alto" da cena e o da camera, e a luz
+// viria de lado. O ambiente da cor aos materiais metalicos.
 base.add(new THREE.HemisphereLight(LUZ.hemisferio.ceu, LUZ.hemisferio.chao, LUZ.hemisferio.intensidade));
 var sol = new THREE.DirectionalLight(LUZ.sol.cor, LUZ.sol.intensidade);
 sol.position.fromArray(LUZ.sol.posicao);
 base.add(sol, sol.target);
+var pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), LUZ.ambiente.desfoque).texture;
+pmrem.dispose();
 
 var escala = CONFIG.escala;
 var angulo = 0;
